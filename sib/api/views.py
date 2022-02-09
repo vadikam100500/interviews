@@ -19,12 +19,13 @@ class APIDeal(APIView):
         'Desc': None
     }
     error_status = status.HTTP_400_BAD_REQUEST
+    ok_status = status.HTTP_200_OK
 
     def get(self, request):
         users = User.objects.all()[:5]
         serializer = APIDealSerializer(users, many=True)
         # return Response({'response': data}, status=status.HTTP_200_OK)
-        return Response(serializer.data)
+        return Response({'response': serializer.data}, status=self.ok_status)
 
     def post(self, request):
         """
@@ -50,7 +51,7 @@ class APIDeal(APIView):
             user.deals.get_or_create(item=item, total=total,
                                      quantity=quantity, date=date)
         return Response({'Status': 'OK - файл был обработан без ошибок'},
-                        status=status.HTTP_200_OK)
+                        status=self.ok_status)
 
     def validate_csv(self, request):
         """
@@ -99,7 +100,7 @@ class APIDeal(APIView):
     def encode_csv(self, file):
         """
         Decode csv file to utf-8 and
-        return data with OrderedDict's if all right
+        return data with OrderedDict's if all right.
         """
         try:
             return csv.DictReader(codecs.iterdecode(file, 'utf-8'))
