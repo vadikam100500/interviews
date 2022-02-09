@@ -18,11 +18,6 @@ def comma_separated_list(value: str):
 
 ALLOWED_HOSTS = comma_separated_list(os.getenv('ALLOWED_HOSTS'))
 
-# CORS_ALLOWED_ORIGINS = comma_separated_list(
-#     os.getenv('CORS_ALLOWED_ORIGINS')
-# )
-# CORS_ALLOW_ALL_ORIGINS = True
-
 
 INSTALLED_APPS = [
     'users.apps.UsersConfig',
@@ -35,8 +30,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'rest_framework',
     'django_extensions',
+    'rest_framework',
 ]
 
 
@@ -120,31 +115,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# REST_FRAMEWORK = {
-#     'DEFAULT_PERMISSION_CLASSES': [
-#         'rest_framework.permissions.IsAuthenticated',
-#     ],
-
-#     'DEFAULT_AUTHENTICATION_CLASSES': [
-#         'rest_framework.authentication.TokenAuthentication',
-#     ],
-#     'DEFAULT_FILTER_BACKENDS': [
-#         'django_filters.rest_framework.DjangoFilterBackend',
-#     ],
-#     'SEARCH_PARAM': 'name'
-# }
-
-
-# SWAGGER_SETTINGS = {
-#     'SECURITY_DEFINITIONS': {
-#         'Token': {
-#             'type': 'apiKey',
-#             'name': 'Authorization',
-#             'in': 'header'
-#         }
-#     }
-# }
 
 
 SHELL_PLUS_PRINT_SQL = True

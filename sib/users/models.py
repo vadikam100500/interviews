@@ -4,5 +4,9 @@ from django.db import models
 
 class User(AbstractUser):
     spent_money = models.PositiveBigIntegerField(
-        verbose_name='Cумма принесенного дохода'
+        default=0, editable=True,
+        verbose_name='Cумма принесенного дохода',
     )
+
+    class Meta(AbstractUser.Meta):
+        ordering = ('-spent_money',)

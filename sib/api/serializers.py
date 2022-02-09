@@ -1,11 +1,12 @@
-from dataclasses import fields
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from api.models import Deal
+# from .models import Deal
+
+User = get_user_model()
 
 
-class DealSerializer(serializers.ModelSerializer):
+class APIDealSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Deal
-        # fields = ('id', 'name', 'color', 'slug')
-        fields = '__all__'
+        model = User
+        fields = ('username', 'spent_money')
