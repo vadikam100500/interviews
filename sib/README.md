@@ -38,14 +38,18 @@
     ```sh
     $ docker-compose up
     ```
-+ Open a new window of terminal and from dir of project run:
-    ```sh
-    $ docker-compose exec web ./manage.py migrate --noinput
-    $ docker-compose exec web ./manage.py collectstatic --no-input 
-    $ docker-compose exec web ./manage.py create_admin
-    ```
 + You can get admin panel in http://localhost/admin/ with username and password, that you set in .env (DJANGO_SUPERUSER_USERNAME, DJANGO_SUPERUSER_PASSWORD)
 + Work endpoint: http://localhost/deals/
+
+
+## How to use:
+- GET:
+    - Make GET request to localhost/deals/
+- POST:
+    - Make POST request to localhost/deals/ like:
+        ```sh
+        {"deals": <file.csv>}
+        ```
 
 ## TOR
 - Full tor you can find in [ТЗ] Junior Python.docx file
