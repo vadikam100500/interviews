@@ -9,5 +9,5 @@ class MyUserAdmin(UserAdmin):
     model = User
 
     fieldsets = UserAdmin.fieldsets + (
-            (None, {'fields': ('spent_money',)}),
+        (None, {'fields': ('spent_money',)}),
     )

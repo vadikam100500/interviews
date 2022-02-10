@@ -3,7 +3,9 @@ import csv
 import datetime as dt
 
 from django.contrib.auth import get_user_model
-from django.utils.timezone import get_default_timezone
+from django.core.cache import cache
+from django.utils.datastructures import MultiValueDictKeyError
+from django.utils.timezone import get_default_timezone, now
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -22,10 +24,31 @@ class APIDeal(APIView):
     ok_status = status.HTTP_200_OK
 
     def get(self, request):
-        users = User.objects.all()[:5]
-        serializer = APIDealSerializer(users, many=True)
-        # return Response({'response': data}, status=status.HTTP_200_OK)
-        return Response({'response': serializer.data}, status=self.ok_status)
+        """
+        Cached in local mem response of GET function.
+
+        Return response like:
+        {“response”: [{
+            “username": <username>,
+            "spent_money": <total_sum>:int,
+            "gems": [<name of gems, that bought not only that user in top5>]
+        },]
+        If cache not fresh, return fresh data and cache it
+        """
+        try:
+            is_not_fresh = cache.get('last_db_update') > cache.get('last_get')
+        except TypeError:
+            is_not_fresh = True
+        if is_not_fresh:
+            users = User.objects.all()[:5]
+            serializer = APIDealSerializer(users, many=True)
+            data_for_cache = {
+                'data': serializer.data,
+                'last_get': now(),
+            }
+            for key, value in data_for_cache.items():
+                cache.set(key, value)
+        return Response({'response': cache.get('data')}, status=self.ok_status)
 
     def post(self, request):
         """
@@ -59,7 +82,13 @@ class APIDeal(APIView):
         Encode it to utf-8 and return data with OrderedDict's.
         """
         body = self.error_response_body
-        file = request.data['deals']
+        try:
+            file = request.data['deals']
+        except (MultiValueDictKeyError, KeyError):
+            body['Desc'] = ('Проверьте, что запрос соответствует '
+                            'виду deals: <anyfile>, где deals '
+                            'это ключ, anyfile, значение в виде файла')
+            return None, body
 
         validators = (
             (self.is_csv(file), 'Проверьте, что высылаемый файл формата .csv'),

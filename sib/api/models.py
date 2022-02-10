@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from django.db import models
 from django.utils.timezone import now
 
@@ -26,6 +27,7 @@ class Deal(models.Model):
     def save(self, *args, **kwargs):
         self.customer.spent_money += int(self.total)
         self.customer.save()
+        cache.set('last_db_update', now())
         super().save(*args, **kwargs)
 
     def __str__(self):
